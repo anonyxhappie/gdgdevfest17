@@ -1,11 +1,14 @@
-// Initialize Firebase
+/**
+ * main.js - Created by anonyxhappie on 10/26/2017.
+ */
+
 var config = {
-apiKey: "AIzaSyB7OBVdghZHJ0-VKlC9wq1EWAFxute-IGM",
-authDomain: "time-tracking-b4b81.firebaseapp.com",
-databaseURL: "https://time-tracking-b4b81.firebaseio.com",
-projectId: "time-tracking-b4b81",
-storageBucket: "time-tracking-b4b81.appspot.com",
-messagingSenderId: "251184367762"
+// apiKey: "",
+// authDomain: "",
+// databaseURL: "",
+// projectId: "",
+// storageBucket: "",
+// messagingSenderId: ""
 };
 
 firebase.initializeApp(config);
@@ -17,11 +20,22 @@ dataRef.on('value', function(data){
         var newF = element.val();
         createFeedbackElement(newF.name, newF.feedback);    
     });
+    
+    /**
+     * Reload page when newFeedback inserted or deleted
+     */
     if(data.numChildren() != document.getElementById('feedback').childElementCount){
         location.reload();
     }
 });
 
+/**
+ * Create feedback element 
+ * <div>
+ *    <h3>{{name}}</h3>
+ *    <p>{{feedback}}</p>
+ * </div>
+ */
 function createFeedbackElement(name, feedback){        
     var nameH3 = document.createElement('h3');
     var nameTextNode = document.createTextNode(name);
