@@ -10,24 +10,52 @@ var config = {
 // storageBucket: "",
 // messagingSenderId: ""
 };
+var app = firebase.initializeApp(config),
+    database = app.database(),
+    auth = app.auth();
 
-firebase.initializeApp(config);
-
-var dataRef = firebase.database().ref('feedback');
-
-dataRef.on('value', function(data){
-    data.forEach(function(element) {
-        var newF = element.val();
-        createFeedbackElement(newF.name, newF.feedback);    
+/**
+ * For Authorization
+ */
+function authCheck(){
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function(result){
+        //console.log("log:::"+result.user.email);
+        if(result.user.email==='akkilsl522@gmail.com'){
+            document.getElementById('login').style.display = 'none';
+            getFeedbacks();
+        }else{
+            auth.signOut();
+            console.log('Logged Out.');
+            alert('Sorry, You are not authorized.\n\nContact Admin to get access.');
+        }
     });
-    
-    /**
-     * Reload page when newFeedback inserted or deleted
-     */
-    if(data.numChildren() != document.getElementById('feedback').childElementCount){
-        location.reload();
-    }
-});
+}
+
+/**
+ * Get and update feedbacks when authorized
+ */
+function getFeedbacks(){
+    var dataRef = database.ref('feedback');
+    dataRef.on('child_added', function(snapshot){
+        var newF = snapshot.val();
+        createFeedbackElement(newF.name, newF.feedback);
+    });
+// dataRef.on('value', function(data){
+//     data.forEach(function(element) {
+//         var newF = element.val();
+//         createFeedbackElement(newF.name, newF.feedback);    
+//     });
+
+//    /**
+//     * Reload page when newFeedback inserted or deleted
+//     */     
+//     if(data.numChildren() != document.getElementById('feedback').childElementCount){
+//         location.reload();
+//     }
+// });
+}
+
 
 /**
  * Create feedback element 
